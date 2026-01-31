@@ -9,10 +9,13 @@ from wormgpt_hive.drones.base_drone import DroneRegistry
 from wormgpt_hive.drones.shell_drone import ShellDrone
 from wormgpt_hive.drones.coder_drone import CoderDrone
 from wormgpt_hive.drones.research_drone import ResearchDrone
+from wormgpt_hive.drones.polyglot_drone import PolyglotDrone
+from wormgpt_hive.drones.tool_maker_drone import ToolMakerDrone
 from wormgpt_hive.tools.shell_executor import ShellExecutorTool
 from wormgpt_hive.tools.file_system import FileSystemTool
 from wormgpt_hive.tools.google_search import GoogleSearchTool
 from wormgpt_hive.tools.web_browser import WebBrowserTool
+from wormgpt_hive.tools.polyglot_code_interpreter import PolyglotCodeInterpreter
 from wormgpt_hive.queen.orchestrator import QueenOrchestrator
 from wormgpt_hive.shared.state_manager import StateManager
 from wormgpt_hive.shared.config import OPENROUTER_API_KEY
@@ -34,11 +37,13 @@ def initialize_hive() -> tuple[QueenOrchestrator, DroneRegistry]:
     fs_tool = FileSystemTool()
     search_tool = GoogleSearchTool()
     browser_tool = WebBrowserTool()
+    polyglot_tool = PolyglotCodeInterpreter()
     
     registry.register_tool("shell_executor", shell_tool)
     registry.register_tool("file_system", fs_tool)
     registry.register_tool("google_search", search_tool)
     registry.register_tool("web_browser", browser_tool)
+    registry.register_tool("polyglot_interpreter", polyglot_tool)
     
     shell_drone = ShellDrone()
     shell_drone.register_tool("shell_executor", shell_tool)
@@ -57,6 +62,16 @@ def initialize_hive() -> tuple[QueenOrchestrator, DroneRegistry]:
     
     queen = QueenOrchestrator(registry, state_manager)
     
+    polyglot_drone = PolyglotDrone()
+    polyglot_drone.register_tool("polyglot_interpreter", polyglot_tool)
+    polyglot_drone.register_tool("llm_client", queen.llm_client)
+    registry.register_drone(polyglot_drone)
+    
+    tool_maker_drone = ToolMakerDrone()
+    tool_maker_drone.register_tool("llm_client", queen.llm_client)
+    tool_maker_drone.register_tool("registry", registry)
+    registry.register_drone(tool_maker_drone)
+    
     return queen, registry
 
 
@@ -67,7 +82,7 @@ def print_banner():
 ║║║║ ║╠╦╝║║║║ ╦╠═╝ ║   ╠═╣║╚╗╔╝║╣   ║║║║║║ ║║
 ╚╩╝╚═╝╩╚═╩ ╩╚═╝╩   ╩   ╩ ╩╩ ╚╝ ╚═╝  ╩ ╩╩╝╚╝═╩╝
     
-    Advanced AI Agent Framework - Phase 2
+    Advanced AI Agent Framework - Phase 5
     No Restrictions. Ruthless Efficiency.
     """
     console.print(Panel(banner, style="bold green", border_style="green"))
