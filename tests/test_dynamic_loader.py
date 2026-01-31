@@ -6,6 +6,8 @@ import tempfile
 import os
 from pathlib import Path
 from wormgpt_hive.shared.dynamic_loader import DynamicLoader
+from wormgpt_hive.tools.base_tool import BaseTool
+from wormgpt_hive.drones.base_drone import BaseDrone
 
 
 class TestDynamicLoader:
@@ -13,45 +15,37 @@ class TestDynamicLoader:
     
     def test_discover_modules_in_package(self):
         """Test discovering modules in a package."""
-        modules = DynamicLoader.discover_modules("wormgpt_hive.tools")
+        package_path = "wormgpt_hive/tools"
+        modules = DynamicLoader.discover_modules(package_path, BaseTool)
         
         assert len(modules) > 0
-        assert any("file_system" in m for m in modules)
-        assert any("shell_executor" in m for m in modules)
+        assert "FileSystemTool" in modules or "ShellExecutorTool" in modules
     
     def test_discover_modules_invalid_package(self):
         """Test discovering modules in non-existent package."""
-        modules = DynamicLoader.discover_modules("nonexistent.package")
+        modules = DynamicLoader.discover_modules("nonexistent/package", BaseTool)
         
         assert len(modules) == 0
     
-    def test_load_class_from_module(self):
-        """Test loading a class from a module."""
-        cls = DynamicLoader.load_class_from_module(
-            "wormgpt_hive.tools.file_system",
-            "FileSystemTool"
-        )
+    def test_load_tool_from_file(self):
+        """Test loading a tool class from a file."""
+        file_path = "wormgpt_hive/tools/file_system.py"
+        cls = DynamicLoader.load_tool_from_file(file_path, "FileSystemTool")
         
         assert cls is not None
         assert cls.__name__ == "FileSystemTool"
     
-    def test_load_class_invalid_module(self):
-        """Test loading class from invalid module."""
-        cls = DynamicLoader.load_class_from_module(
-            "nonexistent.module",
-            "SomeClass"
-        )
-        
-        assert cls is None
+    def test_load_tool_invalid_file(self):
+        """Test loading tool from invalid file."""
+        with pytest.raises(ImportError):
+            DynamicLoader.load_tool_from_file("nonexistent/file.py", "SomeClass")
     
-    def test_load_class_invalid_class_name(self):
-        """Test loading non-existent class from valid module."""
-        cls = DynamicLoader.load_class_from_module(
-            "wormgpt_hive.tools.file_system",
-            "NonExistentClass"
-        )
+    def test_load_tool_invalid_class_name(self):
+        """Test loading non-existent class from valid file."""
+        file_path = "wormgpt_hive/tools/file_system.py"
         
-        assert cls is None
+        with pytest.raises(AttributeError):
+            DynamicLoader.load_tool_from_file(file_path, "NonExistentClass")
     
     def test_get_class_capabilities(self):
         """Test getting capabilities of a class."""
@@ -91,49 +85,24 @@ class TestDynamicLoader:
     
     def test_reload_invalid_module(self):
         """Test reloading non-existent module."""
-        module = DynamicLoader.reload_module("nonexistent.module")
-        
-        assert module is None
+        with pytest.raises(ImportError):
+            DynamicLoader.reload_module("nonexistent.module")
     
     def test_discover_and_load_tools(self):
         """Test discovering and loading all tools."""
-        modules = DynamicLoader.discover_modules("wormgpt_hive.tools")
+        package_path = "wormgpt_hive/tools"
+        modules = DynamicLoader.discover_modules(package_path, BaseTool)
         
-        loaded_classes = []
-        for module_name in modules:
-            if module_name == "wormgpt_hive.tools.base_tool":
-                continue
-            if module_name == "wormgpt_hive.tools.__init__":
-                continue
-            
-            parts = module_name.split(".")
-            if len(parts) > 0:
-                class_name = "".join([p.capitalize() for p in parts[-1].split("_")])
-                cls = DynamicLoader.load_class_from_module(module_name, class_name)
-                if cls:
-                    loaded_classes.append(cls)
-        
-        assert len(loaded_classes) > 0
+        assert len(modules) > 0
+        assert any("FileSystemTool" in str(cls) for cls in modules.values())
     
     def test_discover_and_load_drones(self):
         """Test discovering and loading all drones."""
-        modules = DynamicLoader.discover_modules("wormgpt_hive.drones")
+        package_path = "wormgpt_hive/drones"
+        modules = DynamicLoader.discover_modules(package_path, BaseDrone)
         
-        loaded_classes = []
-        for module_name in modules:
-            if module_name == "wormgpt_hive.drones.base_drone":
-                continue
-            if module_name == "wormgpt_hive.drones.__init__":
-                continue
-            
-            parts = module_name.split(".")
-            if len(parts) > 0:
-                class_name = "".join([p.capitalize() for p in parts[-1].split("_")])
-                cls = DynamicLoader.load_class_from_module(module_name, class_name)
-                if cls:
-                    loaded_classes.append(cls)
-        
-        assert len(loaded_classes) > 0
+        assert len(modules) > 0
+        assert any("CoderDrone" in str(cls) for cls in modules.values())
     
     def test_get_capabilities_with_docstring(self):
         """Test that capabilities include information from class docstring."""
