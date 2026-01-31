@@ -94,28 +94,28 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 4: Advanced Intelligence Features
+### [x] Phase 4: Advanced Intelligence Features
 <!-- chat-id: 18d0e718-cfa7-4feb-98ee-d4d7ca34849d -->
 
-#### [ ] Task 4.1: Reflection Mechanism
+#### [x] Task 4.1: Reflection Mechanism
 - Enhance Queen with `reflect_on_observation()` method
 - Add error detection and re-planning logic
 - Implement retry strategies for failed steps
 - **Verification**: Test mission with intentional error, verify self-correction
 
-#### [ ] Task 4.2: Human Feedback Loop
+#### [x] Task 4.2: Human Feedback Loop
 - Implement `request_human_feedback()` in Queen
 - Add mission status "awaiting_human"
 - Integrate user input into mission flow
 - **Verification**: Pause mission, collect feedback, resume
 
-#### [ ] Task 4.3: Persistent State
+#### [x] Task 4.3: Persistent State
 - Implement `agent_state.json` serialization
 - Load historical missions on startup
 - Add mission history to Queen's context
 - **Verification**: Verify state persistence across restarts
 
-#### [ ] Task 4.4: Dynamic Capability Discovery
+#### [x] Task 4.4: Dynamic Capability Discovery
 - Implement runtime drone/tool introspection
 - Generate capability descriptions dynamically
 - Update Queen's planning prompts with discovered capabilities
@@ -124,6 +124,7 @@ Created comprehensive technical specification covering architecture, components,
 ---
 
 ### [ ] Phase 5: Dynamic Code Generation
+<!-- chat-id: abe1c0d7-656b-417f-987d-dea00181367d -->
 
 #### [ ] Task 5.1: Polyglot Code Interpreter
 - Implement `tools/polyglot_code_interpreter.py`

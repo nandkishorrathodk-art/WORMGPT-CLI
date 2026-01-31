@@ -81,6 +81,11 @@ class QueenOrchestrator:
             if step.status == "failed":
                 reflection = self._reflect_on_failure(step)
                 
+                if not isinstance(reflection, dict):
+                    if verbose:
+                        print("\n⚠️  QUEEN: Reflection failed, continuing mission...\n")
+                    continue
+                
                 if reflection.get("next_action") == "request_human_feedback":
                     feedback = self._request_human_feedback(
                         reflection.get("question", "How should I proceed?")
