@@ -121,7 +121,7 @@ def test_polyglot_drone_generate_and_execute_mock():
 def test_tool_maker_drone_class_name_generation(tool_maker_drone):
     assert tool_maker_drone._generate_class_name("string_reverser") == "StringReverserTool"
     assert tool_maker_drone._generate_class_name("data processor") == "DataProcessorTool"
-    assert tool_maker_drone._generate_class_name("my-custom-tool") == "MyCustomToolTool"
+    assert tool_maker_drone._generate_class_name("my-custom-tool") == "MyCustomTool"
 
 
 def test_tool_maker_drone_ensure_imports(tool_maker_drone):

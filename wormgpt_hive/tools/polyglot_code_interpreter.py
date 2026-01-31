@@ -14,55 +14,55 @@ class PolyglotCodeInterpreter(BaseTool):
         "python": {
             "extension": ".py",
             "command": ["python"],
-            "sandbox_dir": "sandbox/python"
+            "sandbox_subdir": "python"
         },
         "node": {
             "extension": ".js",
             "command": ["node"],
-            "sandbox_dir": "sandbox/nodejs"
+            "sandbox_subdir": "nodejs"
         },
         "nodejs": {
             "extension": ".js",
             "command": ["node"],
-            "sandbox_dir": "sandbox/nodejs"
+            "sandbox_subdir": "nodejs"
         },
         "javascript": {
             "extension": ".js",
             "command": ["node"],
-            "sandbox_dir": "sandbox/nodejs"
+            "sandbox_subdir": "nodejs"
         },
         "go": {
             "extension": ".go",
             "command": ["go", "run"],
-            "sandbox_dir": "sandbox/go"
+            "sandbox_subdir": "go"
         },
         "rust": {
             "extension": ".rs",
             "command": ["rustc", "-o"],
-            "sandbox_dir": "sandbox/rust",
+            "sandbox_subdir": "rust",
             "compile_and_run": True
         },
         "bash": {
             "extension": ".sh",
             "command": ["bash"],
-            "sandbox_dir": "sandbox/bash"
+            "sandbox_subdir": "bash"
         },
         "shell": {
             "extension": ".sh",
             "command": ["bash"],
-            "sandbox_dir": "sandbox/bash"
+            "sandbox_subdir": "bash"
         }
     }
     
     def __init__(self, base_sandbox_dir: str = "wormgpt_hive/sandbox", default_timeout: int = 30):
         super().__init__()
-        self.base_sandbox_dir = base_sandbox_dir
+        self.base_sandbox_dir = Path(base_sandbox_dir)
         self.default_timeout = default_timeout
         self._ensure_sandbox_directories()
     
     def _ensure_sandbox_directories(self):
         for lang_config in self.SUPPORTED_LANGUAGES.values():
-            sandbox_path = Path(lang_config["sandbox_dir"])
+            sandbox_path = self.base_sandbox_dir / lang_config["sandbox_subdir"]
             sandbox_path.mkdir(parents=True, exist_ok=True)
     
     def execute(self, **kwargs) -> Dict[str, Any]:
@@ -105,7 +105,7 @@ class PolyglotCodeInterpreter(BaseTool):
         timeout: int,
         filename: Optional[str] = None
     ) -> Dict[str, Any]:
-        sandbox_dir = Path(lang_config["sandbox_dir"])
+        sandbox_dir = self.base_sandbox_dir / lang_config["sandbox_subdir"]
         
         if filename:
             base_filename = Path(filename).stem
@@ -136,7 +136,7 @@ class PolyglotCodeInterpreter(BaseTool):
         lang_config: Dict[str, Any], 
         timeout: int
     ) -> Dict[str, Any]:
-        command = lang_config["command"] + [str(source_file)]
+        command = lang_config["command"] + [source_file.name]
         
         try:
             result = subprocess.run(
@@ -144,7 +144,7 @@ class PolyglotCodeInterpreter(BaseTool):
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=source_file.parent
+                cwd=str(source_file.parent)
             )
             
             return {
@@ -170,11 +170,11 @@ class PolyglotCodeInterpreter(BaseTool):
         sandbox_dir: Path,
         base_filename: str
     ) -> Dict[str, Any]:
-        executable = sandbox_dir / base_filename
+        executable_name = base_filename
         if os.name == 'nt':
-            executable = sandbox_dir / f"{base_filename}.exe"
+            executable_name = f"{base_filename}.exe"
         
-        compile_command = lang_config["command"] + [str(executable), str(source_file)]
+        compile_command = lang_config["command"] + [executable_name, source_file.name]
         
         try:
             compile_result = subprocess.run(
@@ -182,7 +182,7 @@ class PolyglotCodeInterpreter(BaseTool):
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=sandbox_dir
+                cwd=str(sandbox_dir)
             )
             
             if compile_result.returncode != 0:
@@ -195,11 +195,11 @@ class PolyglotCodeInterpreter(BaseTool):
                 }
             
             run_result = subprocess.run(
-                [str(executable)],
+                [f"./{executable_name}" if os.name != 'nt' else executable_name],
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=sandbox_dir
+                cwd=str(sandbox_dir)
             )
             
             return {
@@ -219,6 +219,7 @@ class PolyglotCodeInterpreter(BaseTool):
             }
         
         finally:
+            executable = sandbox_dir / executable_name
             if executable.exists():
                 try:
                     executable.unlink()

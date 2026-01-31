@@ -25,6 +25,7 @@ class QueenOrchestrator:
             api_key=OPENROUTER_API_KEY,
             base_url=OPENROUTER_BASE_URL
         )
+        self.client.default_model = QUEEN_MODEL
         self.current_mission = None
         self.mission_steps = []
         self.step_index = 0

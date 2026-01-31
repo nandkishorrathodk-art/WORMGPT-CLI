@@ -64,11 +64,11 @@ def initialize_hive() -> tuple[QueenOrchestrator, DroneRegistry]:
     
     polyglot_drone = PolyglotDrone()
     polyglot_drone.register_tool("polyglot_interpreter", polyglot_tool)
-    polyglot_drone.register_tool("llm_client", queen.llm_client)
+    polyglot_drone.register_tool("llm_client", queen.client)
     registry.register_drone(polyglot_drone)
     
     tool_maker_drone = ToolMakerDrone()
-    tool_maker_drone.register_tool("llm_client", queen.llm_client)
+    tool_maker_drone.register_tool("llm_client", queen.client)
     tool_maker_drone.register_tool("registry", registry)
     registry.register_drone(tool_maker_drone)
     
