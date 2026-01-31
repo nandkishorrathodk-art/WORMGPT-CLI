@@ -95,6 +95,7 @@ Created comprehensive technical specification covering architecture, components,
 ---
 
 ### [ ] Phase 4: Advanced Intelligence Features
+<!-- chat-id: 18d0e718-cfa7-4feb-98ee-d4d7ca34849d -->
 
 #### [ ] Task 4.1: Reflection Mechanism
 - Enhance Queen with `reflect_on_observation()` method
