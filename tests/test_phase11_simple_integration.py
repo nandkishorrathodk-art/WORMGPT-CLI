@@ -290,7 +290,7 @@ class TestPerformanceMetrics:
         for i in range(30):
             file_path = os.path.join(temp_dir, f"perf_{i}.txt")
             drone.execute("write_file", {
-                "path": file_path,
+                "file_path": file_path,
                 "content": "Performance test" * 10
             })
         duration = time.time() - start
