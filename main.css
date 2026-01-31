@@ -1,0 +1,343 @@
+/* WormGPT Hive Mind - Retro Matrix Terminal Theme */
+
+Screen {
+    background: $background;
+    color: $text;
+}
+
+/* Color Variables */
+$background: #000000;
+$surface: #0a0e0a;
+$surface-light: #0f1a0f;
+$primary: #00ff41;
+$primary-dim: #00cc33;
+$secondary: #00dd00;
+$accent: #39ff14;
+$warning: #ffff00;
+$error: #ff0000;
+$success: #00ff00;
+$text: #00ff41;
+$text-dim: #009933;
+$border: #00aa00;
+
+/* Header */
+#header {
+    height: 5;
+    background: $surface;
+    border: thick $primary;
+    content-align: center middle;
+    text-style: bold;
+    color: $accent;
+}
+
+/* Main Container */
+#main-container {
+    layout: grid;
+    grid-size: 2 2;
+    grid-gutter: 1;
+    padding: 1;
+}
+
+/* Mission Log */
+#mission-log-panel {
+    column-span: 2;
+    row-span: 1;
+    background: $surface;
+    border: solid $border;
+    height: 25;
+}
+
+#mission-log {
+    height: 100%;
+    background: $background;
+    scrollbar-color: $primary;
+    scrollbar-color-hover: $accent;
+    scrollbar-color-active: $accent;
+}
+
+/* Drone Status */
+#drone-status-panel {
+    column-span: 1;
+    row-span: 1;
+    background: $surface;
+    border: solid $border;
+}
+
+#drone-status {
+    height: 100%;
+    background: $background;
+    scrollbar-color: $primary;
+}
+
+/* Memory / History */
+#memory-panel {
+    column-span: 1;
+    row-span: 1;
+    background: $surface;
+    border: solid $border;
+}
+
+#memory {
+    height: 100%;
+    background: $background;
+    scrollbar-color: $primary;
+}
+
+/* Footer / Input */
+#footer {
+    height: 5;
+    background: $surface-light;
+    border: thick $primary;
+    padding: 1;
+}
+
+#mission-input {
+    background: $surface;
+    border: solid $primary;
+    color: $text;
+    width: 100%;
+}
+
+#mission-input:focus {
+    border: double $accent;
+}
+
+/* Button Styles */
+Button {
+    background: $surface-light;
+    color: $primary;
+    border: solid $border;
+    text-style: bold;
+    margin: 0 1;
+}
+
+Button:hover {
+    background: $primary-dim;
+    color: $background;
+    border: solid $accent;
+}
+
+Button:focus {
+    border: double $accent;
+}
+
+Button.-primary {
+    background: $primary-dim;
+    color: $background;
+    border: solid $primary;
+}
+
+Button.-primary:hover {
+    background: $accent;
+}
+
+/* Dialog / Modal */
+.dialog {
+    background: $surface;
+    border: thick $accent;
+    padding: 1;
+}
+
+.dialog-title {
+    text-style: bold;
+    color: $accent;
+    text-align: center;
+}
+
+.dialog-content {
+    color: $text;
+    padding: 1;
+}
+
+/* Progress Bar */
+ProgressBar {
+    background: $surface;
+    color: $primary;
+}
+
+ProgressBar > .bar--bar {
+    color: $accent;
+}
+
+ProgressBar > .bar--complete {
+    color: $success;
+}
+
+/* Labels and Text */
+Label {
+    color: $text;
+}
+
+Label.-header {
+    text-style: bold;
+    color: $accent;
+}
+
+Label.-success {
+    color: $success;
+}
+
+Label.-warning {
+    color: $warning;
+}
+
+Label.-error {
+    color: $error;
+}
+
+Label.-dim {
+    color: $text-dim;
+}
+
+/* Rich Log */
+RichLog {
+    background: $background;
+    color: $text;
+    scrollbar-color: $primary;
+    scrollbar-color-hover: $accent;
+    padding: 1;
+}
+
+/* DataTable */
+DataTable {
+    background: $surface;
+    color: $text;
+    scrollbar-color: $primary;
+}
+
+DataTable > .datatable--header {
+    background: $surface-light;
+    color: $accent;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: $primary-dim;
+    color: $background;
+}
+
+/* Scrollbar */
+ScrollBar {
+    background: $surface;
+    color: $border;
+}
+
+ScrollBar:hover {
+    background: $surface-light;
+}
+
+/* Container */
+Container {
+    background: $background;
+}
+
+Static {
+    color: $text;
+}
+
+/* Loading Indicator */
+LoadingIndicator {
+    color: $accent;
+}
+
+/* Markdown */
+Markdown {
+    background: $background;
+    color: $text;
+}
+
+MarkdownH1 {
+    color: $accent;
+    text-style: bold;
+}
+
+MarkdownH2 {
+    color: $primary;
+    text-style: bold;
+}
+
+MarkdownH3 {
+    color: $secondary;
+}
+
+/* Tree */
+Tree {
+    background: $background;
+    color: $text;
+    scrollbar-color: $primary;
+}
+
+Tree > .tree--cursor {
+    background: $primary-dim;
+    color: $background;
+}
+
+/* Input */
+Input {
+    background: $surface;
+    color: $text;
+    border: solid $border;
+}
+
+Input:focus {
+    border: double $primary;
+}
+
+Input.-invalid {
+    border: solid $error;
+}
+
+/* Placeholder Text */
+Input > .input--placeholder {
+    color: $text-dim;
+}
+
+/* Custom Classes */
+.status-pending {
+    color: $warning;
+}
+
+.status-in-progress {
+    color: $primary;
+}
+
+.status-completed {
+    color: $success;
+}
+
+.status-failed {
+    color: $error;
+}
+
+.drone-active {
+    color: $accent;
+    text-style: bold;
+}
+
+.drone-idle {
+    color: $text-dim;
+}
+
+.step-number {
+    color: $accent;
+    text-style: bold;
+}
+
+.mission-title {
+    color: $primary;
+    text-style: bold;
+}
+
+.reflection-text {
+    color: $warning;
+    text-style: italic;
+}
+
+.timestamp {
+    color: $text-dim;
+}
+
+.matrix-effect {
+    color: $primary;
+    text-style: bold;
+}

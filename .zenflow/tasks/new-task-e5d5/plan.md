@@ -155,24 +155,24 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 6: Security & Bug Bounty Tools
+### [x] Phase 6: Security & Bug Bounty Tools
 <!-- chat-id: f13bfd4b-ae8d-4299-8ff7-c16ae22c6c29 -->
 
-#### [ ] Task 6.1: Security Analyzer Tool
+#### [x] Task 6.1: Security Analyzer Tool
 - Implement `tools/security_analyzer.py`
 - Integrate Slither for Solidity analysis
 - Parse Slither JSON output
 - Format vulnerability reports
 - **Verification**: Analyze sample vulnerable contract
 
-#### [ ] Task 6.2: Security Drone
+#### [x] Task 6.2: Security Drone
 - Implement `drones/security_drone.py`
 - Add smart contract analysis workflow
 - Implement PoC exploit generation logic
 - Generate Solidity attacking contracts
 - **Verification**: Full bug bounty workflow (analyze → PoC)
 
-#### [ ] Task 6.3: Sample Vulnerable Contracts
+#### [x] Task 6.3: Sample Vulnerable Contracts
 - Create `samples/vulnerable_contract.sol`
 - Add common vulnerabilities (reentrancy, overflow)
 - Create reference PoC exploits
@@ -181,6 +181,7 @@ Created comprehensive technical specification covering architecture, components,
 ---
 
 ### [ ] Phase 7: OPSEC & Anonymization
+<!-- chat-id: 2d14e228-b528-4473-97d2-802ac33f24c3 -->
 
 #### [ ] Task 7.1: Tor Proxy Tool
 - Implement `tools/tor_proxy.py`
@@ -204,6 +205,7 @@ Created comprehensive technical specification covering architecture, components,
 ---
 
 ### [ ] Phase 8: Advanced TUI
+<!-- chat-id: a7ae8168-20d2-4486-9e20-016c7a90eb8d -->
 
 #### [ ] Task 8.1: Textual TUI Framework
 - Install and configure Textual

@@ -103,7 +103,7 @@ def demo_security_analyzer():
                 )
                 
                 if poc_result["success"]:
-                    print(f"   ✓ PoC exploit written to: {poc_file}")
+                    print(f"   [+] PoC exploit written to: {poc_file}")
                     print()
                     
                     with open(poc_file, 'r') as f:
@@ -128,7 +128,7 @@ def demo_security_analyzer():
             with open(report_file, 'w') as f:
                 f.write(report_result["data"]["report"])
             
-            print(f"   ✓ Security report written to: {report_file}")
+            print(f"   [+] Security report written to: {report_file}")
         
         print("\n" + "=" * 60)
         print("Full Security Audit Demo")
@@ -149,7 +149,7 @@ def demo_security_analyzer():
         
         if audit_result["success"]:
             audit_data = audit_result["data"]
-            print(f"   ✓ Full audit complete!")
+            print(f"   [+] Full audit complete!")
             print(f"   Analysis: {audit_data['analysis']['total_issues']} issues")
             print(f"   Report generated: {audit_data.get('report_generated', False)}")
             print(f"   PoC generated: {audit_data.get('poc_generated', False)}")
@@ -160,7 +160,7 @@ def demo_security_analyzer():
                 print(f"   PoC file: {audit_data['poc_file']}")
         
     else:
-        print(f"   ✗ Analysis failed: {analysis_result['error']}")
+        print(f"   [-] Analysis failed: {analysis_result['error']}")
         if analysis_result.get('details'):
             print(f"   Details: {analysis_result['details']}")
     
@@ -173,6 +173,6 @@ if __name__ == "__main__":
     try:
         demo_security_analyzer()
     except Exception as e:
-        print(f"\n✗ Error during demo: {e}")
+        print(f"\n[-] Error during demo: {e}")
         import traceback
         traceback.print_exc()

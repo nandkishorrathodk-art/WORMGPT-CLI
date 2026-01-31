@@ -4,6 +4,7 @@ from .coder_drone import CoderDrone
 from .research_drone import ResearchDrone
 from .polyglot_drone import PolyglotDrone
 from .tool_maker_drone import ToolMakerDrone
+from .opsec_drone import OPSECDrone
 
 __all__ = [
     "BaseDrone",
@@ -14,5 +15,6 @@ __all__ = [
     "CoderDrone",
     "ResearchDrone",
     "PolyglotDrone",
-    "ToolMakerDrone"
+    "ToolMakerDrone",
+    "OPSECDrone"
 ]
