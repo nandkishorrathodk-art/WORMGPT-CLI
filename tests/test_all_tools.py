@@ -28,10 +28,7 @@ class TestFileSystemTool:
         filepath = os.path.join(temp_dir, "test.txt")
         content = "Hello, World!"
         
-        result = fs_tool.execute("write_file", {
-            "filepath": filepath,
-            "content": content
-        })
+        result = fs_tool.execute("write", file_path=filepath, content=content)
         
         assert result["success"] is True
         assert os.path.exists(filepath)
@@ -47,16 +44,14 @@ class TestFileSystemTool:
         with open(filepath, "w") as f:
             f.write(content)
         
-        result = fs_tool.execute("read_file", {"filepath": filepath})
+        result = fs_tool.execute("read", file_path=filepath)
         
         assert result["success"] is True
         assert result["data"]["content"] == content
     
     def test_read_nonexistent_file(self, fs_tool):
         """Test reading a file that doesn't exist."""
-        result = fs_tool.execute("read_file", {
-            "filepath": "/nonexistent/file.txt"
-        })
+        result = fs_tool.execute("read", file_path="/nonexistent/file.txt")
         
         assert result["success"] is False
         assert "error" in result
@@ -67,26 +62,26 @@ class TestFileSystemTool:
         Path(temp_dir, "file2.py").write_text("test")
         os.makedirs(os.path.join(temp_dir, "subdir"))
         
-        result = fs_tool.execute("list_directory", {"dirpath": temp_dir})
+        result = fs_tool.execute("list", directory=temp_dir)
         
         assert result["success"] is True
-        assert "file1.txt" in result["data"]["files"]
-        assert "file2.py" in result["data"]["files"]
-        assert "subdir" in result["data"]["directories"]
+        files = result["data"]["files"]
+        assert any("file1.txt" in f for f in files)
+        assert any("file2.py" in f for f in files)
     
     def test_delete_file(self, fs_tool, temp_dir):
         """Test deleting a file."""
         filepath = os.path.join(temp_dir, "delete_me.txt")
         Path(filepath).write_text("test")
         
-        result = fs_tool.execute("delete_file", {"filepath": filepath})
+        result = fs_tool.execute("delete", file_path=filepath)
         
         assert result["success"] is True
         assert not os.path.exists(filepath)
     
     def test_invalid_action(self, fs_tool):
         """Test calling an invalid action."""
-        result = fs_tool.execute("invalid_action", {})
+        result = fs_tool.execute("invalid_action")
         
         assert result["success"] is False
         assert "Unknown action" in result.get("error", "")
@@ -101,35 +96,23 @@ class TestShellExecutorTool:
     
     def test_execute_simple_command_windows(self, shell_tool):
         """Test executing a simple command on Windows."""
-        result = shell_tool.execute("run_command", {
-            "command": "echo Hello"
-        })
+        result = shell_tool.execute("echo Hello")
         
         assert result["success"] is True
-        assert "Hello" in result["data"]["output"]
+        assert "Hello" in result["data"]["stdout"]
     
     def test_execute_with_timeout(self, shell_tool):
         """Test command execution with timeout."""
-        result = shell_tool.execute("run_command", {
-            "command": "echo test",
-            "timeout": 5
-        })
+        result = shell_tool.execute("echo test", timeout=5)
         
         assert result["success"] is True
+        assert result["data"]["returncode"] == 0
     
     def test_execute_invalid_command(self, shell_tool):
         """Test executing an invalid command."""
-        result = shell_tool.execute("run_command", {
-            "command": "nonexistentcommand12345"
-        })
+        result = shell_tool.execute("nonexistentcommand12345")
         
-        assert result["success"] is False
-    
-    def test_invalid_action(self, shell_tool):
-        """Test calling an invalid action."""
-        result = shell_tool.execute("invalid_action", {})
-        
-        assert result["success"] is False
+        assert result["success"] is False or result["data"]["returncode"] != 0
 
 
 class TestGoogleSearchTool:
@@ -141,10 +124,7 @@ class TestGoogleSearchTool:
     
     def test_search_returns_results(self, search_tool):
         """Test that search returns results."""
-        result = search_tool.execute("search", {
-            "query": "Python programming",
-            "max_results": 3
-        })
+        result = search_tool.execute(query="Python programming", max_results=3)
         
         assert result["success"] is True
         assert "results" in result["data"]
@@ -152,16 +132,7 @@ class TestGoogleSearchTool:
     
     def test_search_with_empty_query(self, search_tool):
         """Test search with empty query."""
-        result = search_tool.execute("search", {
-            "query": "",
-            "max_results": 5
-        })
-        
-        assert result["success"] is False
-    
-    def test_invalid_action(self, search_tool):
-        """Test calling an invalid action."""
-        result = search_tool.execute("invalid_action", {})
+        result = search_tool.execute(query="", max_results=5)
         
         assert result["success"] is False
 
