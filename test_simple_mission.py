@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
-sys.path.insert(0, '.')
+
+sys.path.insert(0, ".")
 
 from wormgpt_hive.drones.base_drone import DroneRegistry
 from wormgpt_hive.drones.shell_drone import ShellDrone
@@ -34,9 +35,9 @@ registry.register_drone(coder_drone)
 state_manager = StateManager()
 queen = QueenOrchestrator(registry, state_manager)
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("Testing WormGPT Hive Mind - Simple Mission")
-print("="*60 + "\n")
+print("=" * 60 + "\n")
 
 goal = "Create a file named test_output.txt with the content 'Hello from WormGPT Hive Mind!' and then read it back to verify"
 
@@ -44,9 +45,9 @@ print(f"GOAL: {goal}\n")
 
 result = queen.execute_mission(goal, verbose=True)
 
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 if result["success"]:
     print("✓ TEST PASSED: Mission completed successfully")
 else:
     print("✗ TEST FAILED: Mission completed with errors")
-print("="*60)
+print("=" * 60)

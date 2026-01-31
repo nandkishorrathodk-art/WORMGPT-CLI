@@ -1,14 +1,13 @@
 from typing import Any, Dict
 from .base_drone import BaseDrone
-import json
 
 
 class PolyglotDrone(BaseDrone):
     """Polyglot Coder Drone: Generates and executes code in multiple programming languages (Python, Node.js, Go, Rust, Bash). Can write code to solve problems, perform calculations, or automate tasks across different language ecosystems."""
-    
+
     def __init__(self):
         super().__init__("PolyglotDrone")
-    
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "execute_code":
             return self._execute_code(parameters)
@@ -20,63 +19,60 @@ class PolyglotDrone(BaseDrone):
             return self._list_languages(parameters)
         else:
             return self._error_response(f"Unknown action: {action}")
-    
+
     def _execute_code(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         error = self._validate_parameters(parameters, ["language", "code"])
         if error:
             return self._error_response(error)
-        
+
         interpreter = self.tools.get("polyglot_interpreter")
         if not interpreter:
             return self._error_response("PolyglotCodeInterpreter not registered")
-        
+
         result = interpreter.execute(
             language=parameters["language"],
             code=parameters["code"],
             timeout=parameters.get("timeout", 30),
-            filename=parameters.get("filename")
+            filename=parameters.get("filename"),
         )
-        
+
         if result["success"]:
             exec_result = result["data"]
-            
+
             if exec_result.get("timed_out"):
                 return self._error_response(
-                    "Code execution timed out",
-                    details=exec_result["stderr"]
+                    "Code execution timed out", details=exec_result["stderr"]
                 )
-            
+
             if exec_result.get("compilation_failed"):
                 return self._error_response(
-                    "Code compilation failed",
-                    details=exec_result["stderr"]
+                    "Code compilation failed", details=exec_result["stderr"]
                 )
-            
+
             if exec_result["exit_code"] != 0:
                 return self._error_response(
                     f"Code execution failed with exit code {exec_result['exit_code']}",
-                    details=f"STDOUT: {exec_result['stdout']}\nSTDERR: {exec_result['stderr']}"
+                    details=f"STDOUT: {exec_result['stdout']}\nSTDERR: {exec_result['stderr']}",
                 )
-            
+
             return self._success_response(
-                exec_result,
-                f"Code executed successfully in {parameters['language']}"
+                exec_result, f"Code executed successfully in {parameters['language']}"
             )
         else:
             return result
-    
+
     def _generate_and_execute(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         error = self._validate_parameters(parameters, ["language", "task"])
         if error:
             return self._error_response(error)
-        
+
         llm_client = self.tools.get("llm_client")
         if not llm_client:
             return self._error_response("LLM client not registered")
-        
+
         language = parameters["language"]
         task = parameters["task"]
-        
+
         code_gen_prompt = f"""Generate {language} code to accomplish the following task:
 
 TASK: {task}
@@ -89,78 +85,87 @@ Requirements:
 - Provide ONLY the raw code, nothing else
 
 {language.upper()} CODE:"""
-        
+
         try:
             response = llm_client.chat.completions.create(
                 model=llm_client.default_model,
                 messages=[
-                    {"role": "system", "content": "You are an expert programmer. Generate only raw code without any markdown formatting or explanations."},
-                    {"role": "user", "content": code_gen_prompt}
+                    {
+                        "role": "system",
+                        "content": "You are an expert programmer. Generate only raw code without any markdown formatting or explanations.",
+                    },
+                    {"role": "user", "content": code_gen_prompt},
                 ],
                 temperature=0.3,
-                max_tokens=2000
+                max_tokens=2000,
             )
-            
+
             generated_code = response.choices[0].message.content.strip()
-            
-            generated_code = generated_code.replace("```python", "").replace("```javascript", "").replace("```js", "")
-            generated_code = generated_code.replace("```go", "").replace("```rust", "").replace("```bash", "")
+
+            generated_code = (
+                generated_code.replace("```python", "")
+                .replace("```javascript", "")
+                .replace("```js", "")
+            )
+            generated_code = (
+                generated_code.replace("```go", "")
+                .replace("```rust", "")
+                .replace("```bash", "")
+            )
             generated_code = generated_code.replace("```", "").strip()
-            
-            exec_result = self._execute_code({
-                "language": language,
-                "code": generated_code,
-                "timeout": parameters.get("timeout", 30)
-            })
-            
+
+            exec_result = self._execute_code(
+                {
+                    "language": language,
+                    "code": generated_code,
+                    "timeout": parameters.get("timeout", 30),
+                }
+            )
+
             if exec_result["success"]:
                 exec_result["data"]["generated_code"] = generated_code
                 return self._success_response(
                     exec_result["data"],
-                    f"Generated and executed {language} code successfully"
+                    f"Generated and executed {language} code successfully",
                 )
             else:
-                return {
-                    **exec_result,
-                    "generated_code": generated_code
-                }
-        
+                return {**exec_result, "generated_code": generated_code}
+
         except Exception as e:
             return self._error_response(
                 f"Code generation failed: {str(e)}",
-                details=f"Language: {language}, Task: {task}"
+                details=f"Language: {language}, Task: {task}",
             )
-    
+
     def _check_language(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         error = self._validate_parameters(parameters, ["language"])
         if error:
             return self._error_response(error)
-        
+
         interpreter = self.tools.get("polyglot_interpreter")
         if not interpreter:
             return self._error_response("PolyglotCodeInterpreter not registered")
-        
+
         result = interpreter.check_language_available(parameters["language"])
-        
+
         if result["available"]:
             return self._success_response(
                 result,
-                f"{parameters['language']} is available: {result.get('version', 'unknown version')}"
+                f"{parameters['language']} is available: {result.get('version', 'unknown version')}",
             )
         else:
             return self._error_response(
                 f"{parameters['language']} is not available",
-                details=result.get("error", "Unknown error")
+                details=result.get("error", "Unknown error"),
             )
-    
+
     def _list_languages(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
         interpreter = self.tools.get("polyglot_interpreter")
         if not interpreter:
             return self._error_response("PolyglotCodeInterpreter not registered")
-        
+
         languages = interpreter.get_supported_languages()
-        
+
         return self._success_response(
-            {"languages": languages},
-            f"Found {len(languages)} supported languages"
+            {"languages": languages}, f"Found {len(languages)} supported languages"
         )

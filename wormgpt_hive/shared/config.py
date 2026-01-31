@@ -6,7 +6,9 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 QUEEN_MODEL = os.getenv("QUEEN_MODEL", "meta-llama/llama-3.1-405b-instruct")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
-HTTP_REFERER = os.getenv("HTTP_REFERER", "https://github.com/nandkishorrathodk-art/WORMGPT-CLI")
+HTTP_REFERER = os.getenv(
+    "HTTP_REFERER", "https://github.com/nandkishorrathodk-art/WORMGPT-CLI"
+)
 STATE_FILE_PATH = os.getenv("STATE_FILE_PATH", "agent_state.json")
 STATE_ENCRYPTION_KEY = os.getenv("STATE_ENCRYPTION_KEY")
 TOR_PROXY_HOST = os.getenv("TOR_PROXY_HOST", "127.0.0.1")

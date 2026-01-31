@@ -16,5 +16,5 @@ __all__ = [
     "ResearchDrone",
     "PolyglotDrone",
     "ToolMakerDrone",
-    "OPSECDrone"
+    "OPSECDrone",
 ]

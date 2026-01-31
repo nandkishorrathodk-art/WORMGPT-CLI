@@ -1,7 +1,5 @@
 import subprocess
 import os
-import tempfile
-import shutil
 from typing import Dict, Any, Optional
 from pathlib import Path
 from .base_tool import BaseTool
@@ -9,215 +7,195 @@ from .base_tool import BaseTool
 
 class PolyglotCodeInterpreter(BaseTool):
     """Execute code in multiple programming languages (Python, Node.js, Go, Rust, Bash) with sandboxing and timeouts."""
-    
+
     SUPPORTED_LANGUAGES = {
         "python": {
             "extension": ".py",
             "command": ["python"],
-            "sandbox_subdir": "python"
+            "sandbox_subdir": "python",
         },
-        "node": {
-            "extension": ".js",
-            "command": ["node"],
-            "sandbox_subdir": "nodejs"
-        },
-        "nodejs": {
-            "extension": ".js",
-            "command": ["node"],
-            "sandbox_subdir": "nodejs"
-        },
+        "node": {"extension": ".js", "command": ["node"], "sandbox_subdir": "nodejs"},
+        "nodejs": {"extension": ".js", "command": ["node"], "sandbox_subdir": "nodejs"},
         "javascript": {
             "extension": ".js",
             "command": ["node"],
-            "sandbox_subdir": "nodejs"
+            "sandbox_subdir": "nodejs",
         },
-        "go": {
-            "extension": ".go",
-            "command": ["go", "run"],
-            "sandbox_subdir": "go"
-        },
+        "go": {"extension": ".go", "command": ["go", "run"], "sandbox_subdir": "go"},
         "rust": {
             "extension": ".rs",
             "command": ["rustc", "-o"],
             "sandbox_subdir": "rust",
-            "compile_and_run": True
+            "compile_and_run": True,
         },
-        "bash": {
-            "extension": ".sh",
-            "command": ["bash"],
-            "sandbox_subdir": "bash"
-        },
-        "shell": {
-            "extension": ".sh",
-            "command": ["bash"],
-            "sandbox_subdir": "bash"
-        }
+        "bash": {"extension": ".sh", "command": ["bash"], "sandbox_subdir": "bash"},
+        "shell": {"extension": ".sh", "command": ["bash"], "sandbox_subdir": "bash"},
     }
-    
-    def __init__(self, base_sandbox_dir: str = "wormgpt_hive/sandbox", default_timeout: int = 30):
+
+    def __init__(
+        self, base_sandbox_dir: str = "wormgpt_hive/sandbox", default_timeout: int = 30
+    ):
         super().__init__()
         self.base_sandbox_dir = Path(base_sandbox_dir)
         self.default_timeout = default_timeout
         self._ensure_sandbox_directories()
-    
+
     def _ensure_sandbox_directories(self):
         for lang_config in self.SUPPORTED_LANGUAGES.values():
             sandbox_path = self.base_sandbox_dir / lang_config["sandbox_subdir"]
             sandbox_path.mkdir(parents=True, exist_ok=True)
-    
+
     def execute(self, **kwargs) -> Dict[str, Any]:
         language = kwargs.get("language", "").lower()
         code = kwargs.get("code", "")
         timeout = kwargs.get("timeout", self.default_timeout)
         filename = kwargs.get("filename")
-        
+
         if not language:
             return self._error_response("Language parameter is required")
-        
+
         if not code:
             return self._error_response("Code parameter is required")
-        
+
         if language not in self.SUPPORTED_LANGUAGES:
             return self._error_response(
                 f"Unsupported language: {language}",
-                f"Supported languages: {', '.join(set(self.SUPPORTED_LANGUAGES.keys()))}"
+                f"Supported languages: {', '.join(set(self.SUPPORTED_LANGUAGES.keys()))}",
             )
-        
+
         lang_config = self.SUPPORTED_LANGUAGES[language]
-        
+
         try:
             result = self._execute_code(code, language, lang_config, timeout, filename)
             return self._success_response(
-                result,
-                f"Code executed successfully in {language}"
+                result, f"Code executed successfully in {language}"
             )
         except Exception as e:
             return self._error_response(
                 f"Execution failed: {str(e)}",
-                details=f"Language: {language}, Timeout: {timeout}s"
+                details=f"Language: {language}, Timeout: {timeout}s",
             )
-    
+
     def _execute_code(
-        self, 
-        code: str, 
-        language: str, 
-        lang_config: Dict[str, Any], 
+        self,
+        code: str,
+        language: str,
+        lang_config: Dict[str, Any],
         timeout: int,
-        filename: Optional[str] = None
+        filename: Optional[str] = None,
     ) -> Dict[str, Any]:
         sandbox_dir = self.base_sandbox_dir / lang_config["sandbox_subdir"]
-        
+
         if filename:
             base_filename = Path(filename).stem
         else:
             base_filename = f"code_{os.getpid()}"
-        
+
         source_file = sandbox_dir / f"{base_filename}{lang_config['extension']}"
-        
+
         try:
-            with open(source_file, 'w', encoding='utf-8') as f:
+            with open(source_file, "w", encoding="utf-8") as f:
                 f.write(code)
-            
+
             if lang_config.get("compile_and_run"):
-                return self._compile_and_run(source_file, lang_config, timeout, sandbox_dir, base_filename)
+                return self._compile_and_run(
+                    source_file, lang_config, timeout, sandbox_dir, base_filename
+                )
             else:
                 return self._run_interpreted(source_file, lang_config, timeout)
-        
+
         finally:
             if source_file.exists():
                 try:
                     source_file.unlink()
                 except Exception:
                     pass
-    
+
     def _run_interpreted(
-        self, 
-        source_file: Path, 
-        lang_config: Dict[str, Any], 
-        timeout: int
+        self, source_file: Path, lang_config: Dict[str, Any], timeout: int
     ) -> Dict[str, Any]:
         command = lang_config["command"] + [source_file.name]
-        
+
         try:
             result = subprocess.run(
                 command,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=str(source_file.parent)
+                cwd=str(source_file.parent),
             )
-            
+
             return {
                 "stdout": result.stdout,
                 "stderr": result.stderr,
                 "exit_code": result.returncode,
-                "timed_out": False
+                "timed_out": False,
             }
-        
+
         except subprocess.TimeoutExpired:
             return {
                 "stdout": "",
                 "stderr": f"Execution timed out after {timeout} seconds",
                 "exit_code": -1,
-                "timed_out": True
+                "timed_out": True,
             }
-    
+
     def _compile_and_run(
-        self, 
-        source_file: Path, 
-        lang_config: Dict[str, Any], 
+        self,
+        source_file: Path,
+        lang_config: Dict[str, Any],
         timeout: int,
         sandbox_dir: Path,
-        base_filename: str
+        base_filename: str,
     ) -> Dict[str, Any]:
         executable_name = base_filename
-        if os.name == 'nt':
+        if os.name == "nt":
             executable_name = f"{base_filename}.exe"
-        
+
         compile_command = lang_config["command"] + [executable_name, source_file.name]
-        
+
         try:
             compile_result = subprocess.run(
                 compile_command,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=str(sandbox_dir)
+                cwd=str(sandbox_dir),
             )
-            
+
             if compile_result.returncode != 0:
                 return {
                     "stdout": compile_result.stdout,
                     "stderr": f"Compilation failed:\n{compile_result.stderr}",
                     "exit_code": compile_result.returncode,
                     "timed_out": False,
-                    "compilation_failed": True
+                    "compilation_failed": True,
                 }
-            
+
             run_result = subprocess.run(
-                [f"./{executable_name}" if os.name != 'nt' else executable_name],
+                [f"./{executable_name}" if os.name != "nt" else executable_name],
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=str(sandbox_dir)
+                cwd=str(sandbox_dir),
             )
-            
+
             return {
                 "stdout": run_result.stdout,
                 "stderr": run_result.stderr,
                 "exit_code": run_result.returncode,
                 "timed_out": False,
-                "compilation_output": compile_result.stdout
+                "compilation_output": compile_result.stdout,
             }
-        
+
         except subprocess.TimeoutExpired:
             return {
                 "stdout": "",
                 "stderr": f"Execution timed out after {timeout} seconds",
                 "exit_code": -1,
-                "timed_out": True
+                "timed_out": True,
             }
-        
+
         finally:
             executable = sandbox_dir / executable_name
             if executable.exists():
@@ -225,41 +203,29 @@ class PolyglotCodeInterpreter(BaseTool):
                     executable.unlink()
                 except Exception:
                     pass
-    
+
     def check_language_available(self, language: str) -> Dict[str, Any]:
         if language not in self.SUPPORTED_LANGUAGES:
-            return {
-                "available": False,
-                "error": f"Language {language} not supported"
-            }
-        
+            return {"available": False, "error": f"Language {language} not supported"}
+
         lang_config = self.SUPPORTED_LANGUAGES[language]
         command = lang_config["command"][0]
-        
+
         try:
             result = subprocess.run(
-                [command, "--version"],
-                capture_output=True,
-                text=True,
-                timeout=5
+                [command, "--version"], capture_output=True, text=True, timeout=5
             )
-            
+
             return {
                 "available": result.returncode == 0,
                 "version": result.stdout.strip() if result.returncode == 0 else None,
-                "error": result.stderr if result.returncode != 0 else None
+                "error": result.stderr if result.returncode != 0 else None,
             }
-        
+
         except FileNotFoundError:
-            return {
-                "available": False,
-                "error": f"{command} not found in PATH"
-            }
+            return {"available": False, "error": f"{command} not found in PATH"}
         except Exception as e:
-            return {
-                "available": False,
-                "error": str(e)
-            }
-    
+            return {"available": False, "error": str(e)}
+
     def get_supported_languages(self) -> list:
         return sorted(set(self.SUPPORTED_LANGUAGES.keys()))
