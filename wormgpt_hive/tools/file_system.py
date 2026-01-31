@@ -39,7 +39,9 @@ class FileSystemTool(BaseTool):
     
     def write_file(self, file_path: str, content: str, mode: str = "w", encoding: str = "utf-8") -> Dict[str, Any]:
         try:
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            dirname = os.path.dirname(file_path)
+            if dirname:
+                os.makedirs(dirname, exist_ok=True)
             
             with open(file_path, mode, encoding=encoding) as f:
                 f.write(content)

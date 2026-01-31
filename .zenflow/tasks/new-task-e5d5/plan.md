@@ -47,28 +47,29 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 2: Basic Drones & Queen Orchestrator
+### [x] Phase 2: Basic Drones & Queen Orchestrator
+<!-- chat-id: 643ebd6a-0db5-4a3f-b557-89b883e5f76b -->
 
-#### [ ] Task 2.1: Shell Drone
+#### [x] Task 2.1: Shell Drone
 - Implement `drones/shell_drone.py`
 - Integrate with `shell_executor` tool
 - Add capability descriptions
 - **Verification**: Execute shell commands via drone
 
-#### [ ] Task 2.2: Coder Drone
+#### [x] Task 2.2: Coder Drone
 - Implement `drones/coder_drone.py`
 - Integrate with `file_system` tool
 - Support file read/write/edit operations
 - **Verification**: Create and modify files via drone
 
-#### [ ] Task 2.3: Queen Orchestrator (Basic)
+#### [x] Task 2.3: Queen Orchestrator (Basic)
 - Implement `queen/orchestrator.py` with basic planning
 - Integrate OpenRouter LLM client
 - Implement mission decomposition logic
 - Add drone dispatcher
 - **Verification**: Execute simple 2-step mission (e.g., create file, read file)
 
-#### [ ] Task 2.4: Simple CLI Interface
+#### [x] Task 2.4: Simple CLI Interface
 - Create basic `main.py` CLI with Typer
 - Support mission goal input
 - Display mission steps and results
@@ -76,15 +77,16 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 3: Research & Web Capabilities
+### [x] Phase 3: Research & Web Capabilities
+<!-- chat-id: 874d28e6-c465-4562-a3bb-2ea82d2af725 -->
 
-#### [ ] Task 3.1: Web Tools
+#### [x] Task 3.1: Web Tools
 - Implement `tools/google_search.py` (DuckDuckGo integration)
 - Implement `tools/web_browser.py` (fetch and parse content)
 - Add rate limiting and error handling
 - **Verification**: Search and fetch web content
 
-#### [ ] Task 3.2: Research Drone
+#### [x] Task 3.2: Research Drone
 - Implement `drones/research_drone.py`
 - Integrate web search and content fetching
 - Add summarization capabilities
