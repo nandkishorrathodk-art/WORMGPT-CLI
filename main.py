@@ -91,8 +91,8 @@ def print_banner():
 ║║║║ ║╠╦╝║║║║ ╦╠═╝ ║   ╠═╣║╚╗╔╝║╣   ║║║║║║ ║║
 ╚╩╝╚═╝╩╚═╩ ╩╚═╝╩   ╩   ╩ ╩╩ ╚╝ ╚═╝  ╩ ╩╩╝╚╝═╩╝
     
-    Advanced AI Agent Framework - Phase 5
-    No Restrictions. Ruthless Efficiency.
+    Advanced AI Agent Framework - Phase 7
+    No Restrictions. Ruthless Efficiency. Maximum OPSEC.
     """
     console.print(Panel(banner, style="bold green", border_style="green"))
 

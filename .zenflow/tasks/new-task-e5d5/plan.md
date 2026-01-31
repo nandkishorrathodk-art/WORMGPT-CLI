@@ -180,23 +180,23 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 7: OPSEC & Anonymization
+### [x] Phase 7: OPSEC & Anonymization
 <!-- chat-id: 2d14e228-b528-4473-97d2-802ac33f24c3 -->
 
-#### [ ] Task 7.1: Tor Proxy Tool
+#### [x] Task 7.1: Tor Proxy Tool
 - Implement `tools/tor_proxy.py`
 - Configure SOCKS5 proxy for requests
 - Add Tor connectivity verification
 - Implement fallback to direct connection
 - **Verification**: Route request through Tor, verify IP change
 
-#### [ ] Task 7.2: OPSEC Drone
+#### [x] Task 7.2: OPSEC Drone
 - Implement `drones/opsec_drone.py`
 - Wrap web tools with Tor routing
 - Add anonymized shell command execution
 - **Verification**: Execute commands through Tor
 
-#### [ ] Task 7.3: State Encryption
+#### [x] Task 7.3: State Encryption
 - Add AES encryption to `state_manager.py`
 - Encrypt `agent_state.json` at rest
 - Derive key from user password or env var
@@ -204,23 +204,23 @@ Created comprehensive technical specification covering architecture, components,
 
 ---
 
-### [ ] Phase 8: Advanced TUI
+### [x] Phase 8: Advanced TUI
 <!-- chat-id: a7ae8168-20d2-4486-9e20-016c7a90eb8d -->
 
-#### [ ] Task 8.1: Textual TUI Framework
+#### [x] Task 8.1: Textual TUI Framework
 - Install and configure Textual
 - Create `main.css` with retro matrix theme
 - Design multi-panel layout (header, mission log, drone status, memory)
 - **Verification**: TUI launches and displays panels
 
-#### [ ] Task 8.2: Mission Execution View
+#### [x] Task 8.2: Mission Execution View
 - Add real-time mission step updates to TUI
 - Display drone activity and tool execution
 - Show reflection and feedback in UI
 - Add progress indicators
 - **Verification**: Execute mission, observe real-time updates
 
-#### [ ] Task 8.3: Interactive Features
+#### [x] Task 8.3: Interactive Features
 - Add mission goal input widget
 - Implement human feedback dialog
 - Add mission history browser
@@ -229,6 +229,7 @@ Created comprehensive technical specification covering architecture, components,
 ---
 
 ### [ ] Phase 9: Testing & Quality Assurance
+<!-- chat-id: 5101c10b-c722-4845-b8e1-4bd3d70ffede -->
 
 #### [ ] Task 9.1: Unit Test Suite
 - Write tests for all tools (pytest)
