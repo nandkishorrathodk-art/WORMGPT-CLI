@@ -135,7 +135,7 @@ class TestAllDronesIntegration:
         drone.register_tool("web_browser", browser_tool)
         
         result = drone.execute("check_tor_availability", {})
-        assert "available" in result["data"] or "error" in result
+        assert ("data" in result and "available" in result["data"]) or "error" in result
         
     def test_08_multi_drone_file_workflow(self, temp_dir):
         """Complex workflow: Coder creates, Polyglot executes, Shell verifies"""
