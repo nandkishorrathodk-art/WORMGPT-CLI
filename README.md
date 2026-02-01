@@ -552,7 +552,7 @@ This is a **private repository** for advanced security research. If you have acc
 
 For questions, feedback, or security concerns regarding this project:
 - **GitHub Issues**: [Open an issue](https://github.com/your-username/WormGPT-Hive-Mind/issues) (private repo)
-- **Email**: your-email@example.com (replace with actual contact)
+- **Email**: nandkishorrathodk@gmail.com (replace with actual contact)
 
 ---
 
