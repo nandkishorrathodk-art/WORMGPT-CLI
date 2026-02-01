@@ -131,6 +131,131 @@ class TestTorProxyTool:
         result = tor_tool.is_tor_available()
 
         assert result is False
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_test_connection_error(self, mock_session_class):
+        """Test connection error when connecting to Tor."""
+        mock_session = MagicMock()
+        mock_session.get.side_effect = Exception("Connection failed")
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.test_connection()
+
+        assert result["success"] is False
+        assert "Unexpected error" in result["error"]
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_test_connection_timeout(self, mock_session_class):
+        """Test connection timeout."""
+        import requests
+        mock_session = MagicMock()
+        mock_session.get.side_effect = requests.exceptions.Timeout()
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.test_connection()
+
+        assert result["success"] is False
+        assert "timeout" in result["error"].lower()
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_get_exit_ip_error(self, mock_session_class):
+        """Test error when getting exit IP."""
+        mock_session = MagicMock()
+        mock_session.get.side_effect = Exception("Network error")
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.get_exit_ip()
+
+        assert result["success"] is False
+        assert "Failed to get exit IP" in result["error"]
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_fetch_url_connection_error(self, mock_session_class):
+        """Test connection error when fetching URL."""
+        import requests
+        mock_session = MagicMock()
+        mock_session.get.side_effect = requests.exceptions.ConnectionError()
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.fetch_url("https://example.com")
+
+        assert result["success"] is False
+        assert "Failed to connect" in result["error"]
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_fetch_url_timeout(self, mock_session_class):
+        """Test timeout when fetching URL."""
+        import requests
+        mock_session = MagicMock()
+        mock_session.get.side_effect = requests.exceptions.Timeout()
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.fetch_url("https://example.com")
+
+        assert result["success"] is False
+        assert "timeout" in result["error"].lower()
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_fetch_url_request_exception(self, mock_session_class):
+        """Test request exception when fetching URL."""
+        import requests
+        mock_session = MagicMock()
+        mock_session.get.side_effect = requests.exceptions.RequestException("Request failed")
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.fetch_url("https://example.com")
+
+        assert result["success"] is False
+        assert "Request failed" in result["error"]
+    
+    @patch("wormgpt_hive.tools.tor_proxy.requests.Session")
+    def test_fetch_url_invalid_json(self, mock_session_class):
+        """Test fetching URL with invalid JSON when parse_json=True."""
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.text = "Not valid JSON"
+        mock_response.json.side_effect = ValueError("Invalid JSON")
+        mock_response.status_code = 200
+        mock_session.get.return_value = mock_response
+        mock_session_class.return_value = mock_session
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.fetch_url("https://api.example.com", parse_json=True)
+
+        assert result["success"] is False
+        assert "not valid JSON" in result["error"]
+    
+    def test_execute_unknown_operation(self):
+        """Test execute with unknown operation."""
+        tor_tool = TorProxyTool()
+        result = tor_tool.execute(operation="invalid_op")
+
+        assert result["success"] is False
+        assert "Unknown operation" in result["error"]
+    
+    def test_execute_fetch_url_missing_url(self):
+        """Test execute fetch_url without URL parameter."""
+        tor_tool = TorProxyTool()
+        result = tor_tool.execute(operation="fetch_url")
+
+        assert result["success"] is False
+        assert "Missing required parameter: url" in result["error"]
+    
+    @patch("wormgpt_hive.tools.tor_proxy.socket.socket")
+    def test_is_tor_available_exception(self, mock_socket_class):
+        """Test Tor availability check with exception."""
+        mock_socket_class.side_effect = Exception("Socket error")
+
+        tor_tool = TorProxyTool()
+        result = tor_tool.is_tor_available()
+
+        assert result is False
 
 
 class TestOPSECDrone:
