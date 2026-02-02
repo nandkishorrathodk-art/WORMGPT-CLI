@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: Private](https://img.shields.io/badge/License-Private-red.svg)](LICENSE)
-[![Phase: 11 Complete](https://img.shields.io/badge/Phase-11%20Complete-green.svg)](docs/ROADMAP.md)
+[![Phase: 14 Partial](https://img.shields.io/badge/Phase-14%20Partial-orange.svg)](docs/ROADMAP.md)
 
 **WormGPT Hive Mind** is an advanced, autonomous AI agent framework designed to execute complex, multi-step tasks across diverse domains. Built with a "no restrictions" philosophy, it operates with ruthless efficiency to achieve user-defined goals, leveraging a sophisticated swarm intelligence model.
 
@@ -12,13 +12,17 @@ This project embodies the concept of an **"Apex Predator"** AI agent, capable of
 
 ---
 
-## 🎯 Core Features (Phase 11 Complete)
+## 🎯 Core Features (Phase 14 Partial)
 
 The WormGPT Hive Mind has evolved through multiple phases, integrating cutting-edge AI agent capabilities:
+
+### ⚙️ **LLM Provider Flexibility**
+- Seamlessly switch between different LLM providers (e.g., OpenRouter, Fireworks AI) by configuring API keys and model names in the `.env` file.
 
 ### 🧠 **Hive Mind Architecture**
 - **Queen Orchestrator**: Central AI that plans missions, delegates tasks, and manages execution
 - **Specialized Drones**: 8 autonomous drones, each with unique capabilities
+- **Multi-Queen Orchestration**: Support for multiple Queen instances (e.g., 'default_queen', 'security_queen') for specialized roles and parallel task execution. Includes basic inter-queen communication via an in-memory message bus.
 - **Dynamic Self-Awareness**: Queen discovers and understands drone capabilities at runtime
 - **Tool Integration**: Modular, extensible tool system for maximum flexibility
 
@@ -26,6 +30,7 @@ The WormGPT Hive Mind has evolved through multiple phases, integrating cutting-e
 - **Reflection & Self-Correction**: Analyzes failures, re-plans strategies, and adapts in real-time
 - **Human Feedback Loop**: Pauses for critical clarification when genuinely stuck
 - **Persistent Memory**: Remembers past missions across sessions via `agent_state.json`
+- **Knowledge Graph Memory**: Stores mission goals, steps, outcomes, and relationships in a NetworkX-based graph for advanced contextual understanding and learning.
 - **Dynamic Capability Discovery**: Automatically detects new drones and tools without code changes
 
 ### 🛠️ **Dynamic Code Generation**
@@ -57,7 +62,7 @@ The WormGPT Hive Mind has evolved through multiple phases, integrating cutting-e
 | **🌐 PolyglotDrone** | Multi-language code generation and execution (Python, Node.js, Go, Rust, Bash) |
 | **🛠️ ToolMakerDrone** | Dynamic tool generation, code analysis, self-modification (alpha) |
 | **🕵️ OPSECDrone** | Tor-routed operations, anonymized web requests and shell commands |
-| **📡 (Future) ReconDrone** | Automated reconnaissance (ports, subdomains, OSINT) - Phase 12 |
+| **📡 ReconDrone** | Performs network reconnaissance (port scanning with nmap, subdomain enumeration with subfinder) |
 
 ---
 
@@ -73,7 +78,7 @@ The WormGPT Hive Mind has evolved through multiple phases, integrating cutting-e
 #### **Core Requirements**
 - **Python**: 3.10 or higher
 - **Git**: For cloning and managing the repository
-- **Internet Connection**: Required for OpenRouter API calls
+- **Internet Connection**: Required for configured LLM API calls
 
 #### **Language Interpreters** (for Polyglot features)
 ```bash
@@ -113,10 +118,10 @@ sudo systemctl enable tor
 curl --socks5 localhost:9050 --socks5-hostname localhost:9050 -s https://check.torproject.org/ | grep -q Congratulations && echo "Tor is working" || echo "Tor is not working"
 ```
 
-#### **OpenRouter API Key**
-1. Visit [OpenRouter.ai](https://openrouter.ai/)
+#### **LLM API Key (e.g., Fireworks AI)**
+1. Visit your preferred LLM provider (e.g., [Fireworks.ai](https://fireworks.ai/) or [OpenRouter.ai](https://openrouter.ai/))
 2. Create an account and generate an API key
-3. Choose a powerful model (e.g., `meta-llama/llama-3.1-405b-instruct` or `anthropic/claude-3.5-sonnet`)
+3. Choose a powerful model (e.g., `accounts/fireworks/models/mixtral-8x7b-instruct` or `meta-llama/llama-3.1-405b-instruct`)
 
 ---
 
@@ -163,11 +168,11 @@ nano .env
 
 **Required Configuration** (`.env`):
 ```bash
-# OpenRouter API Configuration
-OPENROUTER_API_KEY="sk-or-v1-YOUR_API_KEY_HERE"
-QUEEN_MODEL="meta-llama/llama-3.1-405b-instruct"  # Or your preferred model
-OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
-HTTP_REFERER="https://github.com/your-username/WormGPT-Hive-Mind"
+# LLM API Configuration (e.g., Fireworks AI)
+FIREWORKS_API_KEY="fw-YOUR_API_KEY_HERE" # Or OPENROUTER_API_KEY if using OpenRouter
+QUEEN_MODEL="accounts/fireworks/models/mixtral-8x7b-instruct"  # Or your preferred model
+OPENROUTER_BASE_URL="https://api.fireworks.ai/inference/v1" # Or https://openrouter.ai/api/v1 if using OpenRouter
+HTTP_REFERER="https://github.com/nandkishorrathodk-art/WORMGPT-CLI"
 
 # Optional: State Encryption (32-byte hex key)
 STATE_ENCRYPTION_KEY="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
@@ -450,14 +455,9 @@ python examples/opsec_demo.py
 
 ## 🗺️ Roadmap (Phase 12-15)
 
-### **Phase 12: Advanced Memory & Reconnaissance**
-- **Knowledge Graph Memory** (NetworkX)
-  - Extract entities and relations from missions
-  - Query graph for improved planning and context
-- **Recon-Drone** (Automated reconnaissance)
-  - Port scanning (nmap integration)
-  - Subdomain enumeration
-  - OSINT data collection
+### **Phase 12: Advanced Memory & Reconnaissance (Implemented)**
+- **Knowledge Graph Memory** (NetworkX) - *Implemented: Mission data, entities, and relationships are stored in a NetworkX graph.*
+- **Recon-Drone** (Automated reconnaissance) - *Implemented: Capable of port scanning (nmap) and subdomain enumeration (subfinder).*
 
 ### **Phase 13: Containerized Execution**
 - **Docker Integration**
@@ -465,7 +465,7 @@ python examples/opsec_demo.py
   - Resource limits (CPU, memory, network)
   - Enhanced sandboxing and isolation
 
-### **Phase 14: Multi-Queen Orchestration**
+### **Phase 14: Multi-Queen Orchestration (In Progress)**
 - **Specialized Queens**
   - Security-Queen (dedicated to bug bounties)
   - Research-Queen (dedicated to intelligence gathering)
