@@ -12,6 +12,39 @@ class ToolMakerDrone(BaseDrone):
         super().__init__("ToolMakerDrone")
         self.tools_dir = Path("wormgpt_hive/tools")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "create_tool": {
+                "description": "Generates a new Python tool class based on a description and integrates it into the system.",
+                "parameters": [
+                    {"name": "tool_name", "type": "str", "description": "A concise, descriptive name for the new tool (e.g., 'JSON Validator', 'URL Shortener')."},
+                    {"name": "description", "type": "str", "description": "A detailed description of what the tool should do and its primary function."},
+                    {"name": "capabilities", "type": "List[str]", "optional": True, "description": "List of specific capabilities or methods the tool should implement (e.g., ['validate_json', 'shorten_url'])."}
+                ]
+            },
+            "analyze_code": {
+                "description": "Analyzes a given Python code file for quality, potential bugs, performance, and security, providing suggestions for improvement.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the Python file to analyze."},
+                    {"name": "analysis_goal", "type": "str", "optional": True, "description": "A specific goal or focus for the code analysis (e.g., 'find security vulnerabilities', 'optimize performance')."}
+                ]
+            },
+            "modify_code": {
+                "description": "Modifies a specified Python code file to achieve a given modification goal. Requires explicit user approval by default.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the Python file to modify."},
+                    {"name": "modification_goal", "type": "str", "description": "A clear description of the desired modification (e.g., 'add a new function to calculate factorial')."},
+                    {"name": "require_approval", "type": "bool", "optional": True, "description": "If True, the generated code modification will be presented for approval before being applied. Defaults to True."}
+                ]
+            },
+            "reload_tool": {
+                "description": "Reloads a dynamically created or modified tool module, making its new capabilities available to the system.",
+                "parameters": [
+                    {"name": "tool_file", "type": "str", "description": "The filename of the tool to reload (e.g., 'my_custom_tool.py')."}
+                ]
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "create_tool":
             return self._create_tool(parameters)

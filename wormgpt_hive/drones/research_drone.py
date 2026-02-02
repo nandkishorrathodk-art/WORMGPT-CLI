@@ -8,6 +8,33 @@ class ResearchDrone(BaseDrone):
     def __init__(self):
         super().__init__("ResearchDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "web_search": {
+                "description": "Performs a web search using DuckDuckGo.",
+                "parameters": [
+                    {"name": "query", "type": "str", "description": "The search query."},
+                    {"name": "max_results", "type": "int", "optional": True, "description": "Maximum number of search results to return. Defaults to 5."},
+                    {"name": "region", "type": "str", "optional": True, "description": "Region for the search (e.g., 'wt-wt' for worldwide)."}
+                ]
+            },
+            "fetch_content": {
+                "description": "Fetches content from a specified URL.",
+                "parameters": [
+                    {"name": "url", "type": "str", "description": "The URL to fetch content from."},
+                    {"name": "parse_content", "type": "bool", "optional": True, "description": "If True, attempts to extract main textual content. Defaults to True."}
+                ]
+            },
+            "search_and_summarize": {
+                "description": "Performs a web search and then fetches and processes content from the top results for summarization.",
+                "parameters": [
+                    {"name": "query", "type": "str", "description": "The search query."},
+                    {"name": "max_results", "type": "int", "optional": True, "description": "Maximum number of search results to consider. Defaults to 3."},
+                    {"name": "fetch_top_n", "type": "int", "optional": True, "description": "Number of top search results to fetch content from. Defaults to 1."}
+                ]
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "web_search":
             return self._web_search(parameters)

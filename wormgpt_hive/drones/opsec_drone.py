@@ -8,6 +8,37 @@ class OPSECDrone(BaseDrone):
     def __init__(self):
         super().__init__("OPSECDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "test_tor_connection": {
+                "description": "Tests if Tor proxy is configured correctly and connected to the Tor network.",
+                "parameters": []
+            },
+            "get_tor_ip": {
+                "description": "Retrieves the current IP address as seen from the Tor network (Tor exit node IP).",
+                "parameters": []
+            },
+            "fetch_url_via_tor": {
+                "description": "Fetches content from a specified URL routing the request through the Tor network.",
+                "parameters": [
+                    {"name": "url", "type": "str", "description": "The URL to fetch content from."},
+                    {"name": "parse_json", "type": "bool", "optional": True, "description": "If True, attempts to parse the response as JSON. Defaults to False."}
+                ]
+            },
+            "execute_command_via_tor": {
+                "description": "Executes a shell command, routing its network traffic through the Tor network.",
+                "parameters": [
+                    {"name": "command", "type": "str", "description": "The shell command to execute."},
+                    {"name": "cwd", "type": "str", "optional": True, "description": "The current working directory for the command."},
+                    {"name": "timeout", "type": "int", "optional": True, "description": "Maximum time in seconds to wait for the command to complete."}
+                ]
+            },
+            "check_tor_availability": {
+                "description": "Checks if the Tor proxy service is running and accessible.",
+                "parameters": []
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "test_tor_connection":
             return self._test_tor_connection(parameters)

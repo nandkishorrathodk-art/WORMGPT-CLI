@@ -8,6 +8,27 @@ class ShellDrone(BaseDrone):
     def __init__(self):
         super().__init__("ShellDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "execute_command": {
+                "description": "Executes a single shell command.",
+                "parameters": [
+                    {"name": "command", "type": "str", "description": "The shell command to execute."},
+                    {"name": "cwd", "type": "str", "optional": True, "description": "The current working directory for the command."},
+                    {"name": "timeout", "type": "int", "optional": True, "description": "Maximum time in seconds to wait for the command to complete."},
+                    {"name": "use_tor", "type": "bool", "optional": True, "description": "If true, routes the command through Tor for anonymity. Requires Tor proxy to be running."}
+                ]
+            },
+            "execute_script": {
+                "description": "Executes a script in a specified language.",
+                "parameters": [
+                    {"name": "script_content", "type": "str", "description": "The content of the script to execute."},
+                    {"name": "script_type", "type": "str", "description": "The type of script (e.g., 'bash', 'python', 'node', 'powershell')."},
+                    {"name": "cwd", "type": "str", "optional": True, "description": "The current working directory for the script."}
+                ]
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "execute_command":
             return self._execute_command(parameters)

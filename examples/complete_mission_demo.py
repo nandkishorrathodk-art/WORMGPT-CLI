@@ -24,7 +24,7 @@ from wormgpt_hive.drones.base_drone import DroneRegistry
 from wormgpt_hive.queen.orchestrator import QueenOrchestrator
 from wormgpt_hive.shared.state_manager import StateManager
 from wormgpt_hive.shared.dynamic_loader import DynamicLoader
-from wormgpt_hive.shared.config import OPENROUTER_API_KEY
+from wormgpt_hive.shared.config import FIREWORKS_API_KEY
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -33,11 +33,11 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 def check_prerequisites():
     console = Console()
     
-    if not OPENROUTER_API_KEY or OPENROUTER_API_KEY == "your_openrouter_api_key_here":
+    if not FIREWORKS_API_KEY or FIREWORKS_API_KEY == "your_openrouter_api_key_here":
         console.print(Panel(
             "[bold red]ERROR: OpenRouter API key not configured[/bold red]\n\n"
             "Please set your API key in the .env file:\n"
-            "  OPENROUTER_API_KEY=\"sk-or-v1-YOUR_KEY_HERE\"",
+            "  FIREWORKS_API_KEY=\"sk-or-v1-YOUR_KEY_HERE\"",
             border_style="red"
         ))
         return False

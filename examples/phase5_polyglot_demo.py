@@ -16,7 +16,7 @@ from wormgpt_hive.drones.tool_maker_drone import ToolMakerDrone
 from wormgpt_hive.tools.polyglot_code_interpreter import PolyglotCodeInterpreter
 from openai import OpenAI
 from wormgpt_hive.shared.config import (
-    OPENROUTER_API_KEY,
+    FIREWORKS_API_KEY,
     OPENROUTER_BASE_URL,
     QUEEN_MODEL,
 )
@@ -57,14 +57,14 @@ def demo_polyglot_drone():
     print("DEMO 2: PolyglotDrone with LLM Code Generation")
     print("=" * 70 + "\n")
 
-    if not OPENROUTER_API_KEY:
-        print("Skipping: OPENROUTER_API_KEY not set")
+    if not FIREWORKS_API_KEY:
+        print("Skipping: FIREWORKS_API_KEY not set")
         return
 
     drone = PolyglotDrone()
     interpreter = PolyglotCodeInterpreter()
 
-    client = OpenAI(api_key=OPENROUTER_API_KEY, base_url=OPENROUTER_BASE_URL)
+    client = OpenAI(api_key=FIREWORKS_API_KEY, base_url=OPENROUTER_BASE_URL)
     client.default_model = QUEEN_MODEL
 
     drone.register_tool("polyglot_interpreter", interpreter)
@@ -92,14 +92,14 @@ def demo_tool_maker():
     print("DEMO 3: ToolMakerDrone - Dynamic Tool Creation")
     print("=" * 70 + "\n")
 
-    if not OPENROUTER_API_KEY:
-        print("Skipping: OPENROUTER_API_KEY not set")
+    if not FIREWORKS_API_KEY:
+        print("Skipping: FIREWORKS_API_KEY not set")
         return
 
     registry = DroneRegistry()
     drone = ToolMakerDrone()
 
-    client = OpenAI(api_key=OPENROUTER_API_KEY, base_url=OPENROUTER_BASE_URL)
+    client = OpenAI(api_key=FIREWORKS_API_KEY, base_url=OPENROUTER_BASE_URL)
     client.default_model = QUEEN_MODEL
 
     drone.register_tool("llm_client", client)
@@ -121,12 +121,12 @@ def demo_code_analysis():
     print("DEMO 4: Code Analysis with ToolMakerDrone")
     print("=" * 70 + "\n")
 
-    if not OPENROUTER_API_KEY:
-        print("Skipping: OPENROUTER_API_KEY not set")
+    if not FIREWORKS_API_KEY:
+        print("Skipping: FIREWORKS_API_KEY not set")
         return
 
     drone = ToolMakerDrone()
-    client = OpenAI(api_key=OPENROUTER_API_KEY, base_url=OPENROUTER_BASE_URL)
+    client = OpenAI(api_key=FIREWORKS_API_KEY, base_url=OPENROUTER_BASE_URL)
     client.default_model = QUEEN_MODEL
 
     drone.register_tool("llm_client", client)

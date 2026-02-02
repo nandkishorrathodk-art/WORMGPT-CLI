@@ -8,6 +8,37 @@ class PolyglotDrone(BaseDrone):
     def __init__(self):
         super().__init__("PolyglotDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "execute_code": {
+                "description": "Executes a given code snippet in a specified programming language.",
+                "parameters": [
+                    {"name": "language", "type": "str", "description": "The programming language (e.g., 'python', 'node', 'go', 'rust', 'bash')."},
+                    {"name": "code", "type": "str", "description": "The code snippet to execute."},
+                    {"name": "timeout", "type": "int", "optional": True, "description": "Maximum time in seconds to wait for code execution. Defaults to 30."},
+                    {"name": "filename", "type": "str", "optional": True, "description": "Optional filename to save the code before execution."}
+                ]
+            },
+            "generate_and_execute": {
+                "description": "Generates code in a specified language to perform a given task, then executes it.",
+                "parameters": [
+                    {"name": "language", "type": "str", "description": "The programming language for code generation and execution."},
+                    {"name": "task", "type": "str", "description": "The task for which to generate code."},
+                    {"name": "timeout", "type": "int", "optional": True, "description": "Maximum time in seconds to wait for code execution. Defaults to 30."}
+                ]
+            },
+            "check_language": {
+                "description": "Checks if a specific programming language interpreter is available on the system.",
+                "parameters": [
+                    {"name": "language", "type": "str", "description": "The programming language to check."}
+                ]
+            },
+            "list_languages": {
+                "description": "Lists all programming languages supported by the Polyglot Code Interpreter.",
+                "parameters": []
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "execute_code":
             return self._execute_code(parameters)

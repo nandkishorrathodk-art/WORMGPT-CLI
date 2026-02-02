@@ -10,10 +10,10 @@ from wormgpt_hive.tools.shell_executor import ShellExecutorTool
 from wormgpt_hive.tools.file_system import FileSystemTool
 from wormgpt_hive.queen.orchestrator import QueenOrchestrator
 from wormgpt_hive.shared.state_manager import StateManager
-from wormgpt_hive.shared.config import OPENROUTER_API_KEY
+from wormgpt_hive.shared.config import FIREWORKS_API_KEY
 
-if not OPENROUTER_API_KEY:
-    print("ERROR: OPENROUTER_API_KEY not set in .env file")
+if not FIREWORKS_API_KEY:
+    print("ERROR: FIREWORKS_API_KEY not set in .env file")
     sys.exit(1)
 
 registry = DroneRegistry()

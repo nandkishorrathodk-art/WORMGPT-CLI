@@ -3,7 +3,7 @@
 
 import os
 
-os.environ["OPENROUTER_API_KEY"] = "test_key"
+os.environ["FIREWORKS_API_KEY"] = "test_key"
 
 from tui_main import WormGPTHiveTUI, HumanFeedbackDialog
 

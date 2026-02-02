@@ -63,15 +63,38 @@ class BaseDrone(ABC):
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         pass
 
-    def get_capabilities(self) -> DroneCapability:
-        from ..shared.dynamic_loader import DynamicLoader
+    @abstractmethod
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Returns a dictionary of supported actions with their descriptions and parameters.
+        Example:
+        {
+            "action_name": {
+                "description": "Description of action",
+                "parameters": [
+                    {"name": "param1", "type": "str", "description": "Desc of param1"},
+                    {"name": "param2", "type": "int", "optional": true, "description": "Desc of param2"},
+                ]
+            }
+        }
+        """
+        pass
 
-        class_info = DynamicLoader.get_class_capabilities(self.__class__)
+    def get_capabilities(self) -> DroneCapability:
+        supported_actions = self.get_supported_actions()
+        methods = []
+        for action_name, action_info in supported_actions.items():
+            method_info = {
+                "name": action_name,
+                "description": action_info.get("description", "No description"),
+                "parameters": action_info.get("parameters", []),
+            }
+            methods.append(method_info)
 
         return DroneCapability(
             name=self.name,
             description=self.description,
-            methods=class_info.get("methods", []),
+            methods=methods,
         )
 
     def register_tool(self, tool_name: str, tool_instance: Any):

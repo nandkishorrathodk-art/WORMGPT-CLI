@@ -8,6 +8,55 @@ class SecurityDrone(BaseDrone):
     def __init__(self):
         super().__init__("SecurityDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "analyze_contract": {
+                "description": "Analyzes a given Solidity contract code snippet for vulnerabilities.",
+                "parameters": [
+                    {"name": "contract_code", "type": "str", "description": "The Solidity contract code to analyze."},
+                    {"name": "contract_name", "type": "str", "optional": True, "description": "The name of the main contract within the code. Defaults to 'Contract'."}
+                ]
+            },
+            "analyze_contract_file": {
+                "description": "Analyzes a Solidity contract file for vulnerabilities using Slither.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the Solidity contract file."},
+                    {"name": "contract_name", "type": "str", "optional": True, "description": "The name of the main contract in the file. If not provided, Slither will attempt to deduce it."}
+                ]
+            },
+            "generate_security_report": {
+                "description": "Generates a formatted security report from a list of identified vulnerabilities.",
+                "parameters": [
+                    {"name": "vulnerabilities", "type": "List[Dict[str, Any]]", "description": "A list of vulnerability dictionaries, typically from a Slither analysis."},
+                    {"name": "format", "type": "str", "optional": True, "description": "The desired format for the report (e.g., 'markdown', 'json'). Defaults to 'markdown'."}
+                ]
+            },
+            "generate_poc_plan": {
+                "description": "Generates a Proof-of-Concept (PoC) exploitation plan for a given vulnerability.",
+                "parameters": [
+                    {"name": "vulnerability", "type": "Dict[str, Any]", "description": "A dictionary representing the vulnerability for which to create a PoC plan."}
+                ]
+            },
+            "write_poc_exploit": {
+                "description": "Writes a Solidity Proof-of-Concept (PoC) attacking contract for a specific vulnerability to a file.",
+                "parameters": [
+                    {"name": "vulnerability", "type": "Dict[str, Any]", "description": "A dictionary representing the vulnerability."},
+                    {"name": "output_file", "type": "str", "description": "The filename to save the generated PoC Solidity contract."},
+                    {"name": "target_contract", "type": "str", "optional": True, "description": "The name of the vulnerable contract the PoC will target. Defaults to 'VulnerableContract'."}
+                ]
+            },
+            "full_security_audit": {
+                "description": "Performs a complete security audit on a Solidity contract file, including analysis, report generation, and optional PoC generation.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the Solidity contract file to audit."},
+                    {"name": "generate_report", "type": "bool", "optional": True, "description": "Whether to generate a security report. Defaults to True."},
+                    {"name": "report_output", "type": "str", "optional": True, "description": "Filename for the security report. Defaults to 'security_report.md'."},
+                    {"name": "generate_poc", "type": "bool", "optional": True, "description": "Whether to generate a PoC exploit for critical vulnerabilities. Defaults to False."},
+                    {"name": "poc_output", "type": "str", "optional": True, "description": "Filename for the PoC exploit contract. Defaults to 'exploit_poc.sol'."}
+                ]
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "analyze_contract":
             return self._analyze_contract(parameters)

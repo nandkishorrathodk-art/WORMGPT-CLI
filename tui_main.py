@@ -36,7 +36,7 @@ from wormgpt_hive.tools.polyglot_code_interpreter import PolyglotCodeInterpreter
 from wormgpt_hive.tools.security_analyzer import SecurityAnalyzerTool
 from wormgpt_hive.queen.orchestrator import QueenOrchestrator
 from wormgpt_hive.shared.state_manager import StateManager
-from wormgpt_hive.shared.config import OPENROUTER_API_KEY
+from wormgpt_hive.shared.config import FIREWORKS_API_KEY
 
 
 class HumanFeedbackDialog(ModalScreen[str]):
@@ -172,9 +172,9 @@ class WormGPTHiveTUI(App):
         mission_log = self.query_one("#mission-log", RichLog)
 
         try:
-            if not OPENROUTER_API_KEY:
+            if not FIREWORKS_API_KEY:
                 mission_log.write(
-                    "[bold red]ERROR: OPENROUTER_API_KEY not set in .env file[/bold red]"
+                    "[bold red]ERROR: FIREWORKS_API_KEY not set in .env file[/bold red]"
                 )
                 return
 

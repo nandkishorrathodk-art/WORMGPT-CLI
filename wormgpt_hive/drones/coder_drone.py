@@ -8,6 +8,51 @@ class CoderDrone(BaseDrone):
     def __init__(self):
         super().__init__("CoderDrone")
 
+    def get_supported_actions(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "read_file": {
+                "description": "Reads the content of a specified file.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the file to read."}
+                ]
+            },
+            "write_file": {
+                "description": "Writes content to a specified file. If the file exists, it will be overwritten.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the file to write to."},
+                    {"name": "content", "type": "str", "description": "The content to write to the file."},
+                    {"name": "mode", "type": "str", "optional": True, "description": "The mode to open the file in (e.g., 'w' for write, 'a' for append). Defaults to 'w'."}
+                ]
+            },
+            "list_files": {
+                "description": "Lists files and directories within a specified path.",
+                "parameters": [
+                    {"name": "directory", "type": "str", "optional": True, "description": "The directory to list. Defaults to current directory."},
+                    {"name": "pattern", "type": "str", "optional": True, "description": "A glob-style pattern to filter files (e.g., '*.py'). Defaults to '*'."},
+                    {"name": "recursive", "type": "bool", "optional": True, "description": "Whether to list files recursively. Defaults to False."}
+                ]
+            },
+            "delete_file": {
+                "description": "Deletes a specified file.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the file to delete."}
+                ]
+            },
+            "create_directory": {
+                "description": "Creates a new directory.",
+                "parameters": [
+                    {"name": "directory", "type": "str", "description": "The path to the directory to create."},
+                    {"name": "exist_ok", "type": "bool", "optional": True, "description": "If False, an error is raised if the directory already exists. Defaults to True."}
+                ]
+            },
+            "file_exists": {
+                "description": "Checks if a file exists at the specified path.",
+                "parameters": [
+                    {"name": "file_path", "type": "str", "description": "The path to the file to check."}
+                ]
+            }
+        }
+
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         if action == "read_file":
             return self._read_file(parameters)
